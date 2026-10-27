@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dativ Meister</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f4f8;--card:#fff;--ink:#14213d;--mute:#5b6577;--line:#d5dae4;--accent:#ffcc00;--on-accent:#14213d;--ok:#1b7f4b;--okbg:#e2f4ea;--bad:#b3261e;--badbg:#fbe6e4;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1626;--card:#17233b;--ink:#eef1f7;--mute:#a3adc2;--line:#2c3b5a;--okbg:#12362a;--ok:#6fdca0;--badbg:#3d1c1a;--bad:#ff9b94;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1626;--card:#17233b;--ink:#eef1f7;--mute:#a3adc2;--line:#2c3b5a;--okbg:#12362a;--ok:#6fdca0;--badbg:#3d1c1a;--bad:#ff9b94;color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:17px;line-height:1.5}
+main{max-width:560px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:2.1rem;line-height:1.1;font-weight:800;margin:8px 0 12px}
+h2{font-size:1.3rem;margin:0 0 8px}
+p{margin:0 0 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}
+.mute{color:var(--mute)}
+button,input{font:inherit}
+.btn{display:block;width:100%;padding:14px;border:0;border-radius:12px;background:var(--accent);color:var(--on-accent);font-weight:800;cursor:pointer}
+.btn:focus-visible,.opt:focus-visible,input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+input[type=text]{width:100%;padding:13px;border:2px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);margin-bottom:12px}
+.top{display:flex;justify-content:space-between;font-weight:600;margin-bottom:8px}
+.bar{height:6px;background:var(--line);border-radius:3px;margin-bottom:16px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent)}
+.scene{font-size:1.05rem;border-left:5px solid var(--accent);padding-left:12px;margin-bottom:14px}
+.opt{display:block;width:100%;text-align:left;padding:13px;margin-bottom:10px;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:12px;cursor:pointer}
+.opt.ok,.fb.ok{background:var(--okbg);border-color:var(--ok);color:var(--ok)}
+.opt.bad,.fb.bad{background:var(--badbg);border-color:var(--bad);color:var(--bad)}
+.fb{padding:12px;border:2px solid;border-radius:12px;margin:4px 0 14px;font-weight:600}
+.rules{list-style:none;padding:0;margin:0}
+.rules li{padding:6px 0;border-bottom:1px solid var(--line)}
+.score{font-size:3rem;font-weight:800}
+.hero{position:relative;overflow:hidden;background-color:var(--accent);color:var(--on-accent);border-radius:20px;padding:24px 18px 20px;margin-bottom:16px;background-image:radial-gradient(circle at 100% 0,rgba(255,255,255,.55) 0 16%,transparent 17%),radial-gradient(circle at 0 100%,rgba(20,33,61,.12) 0 20%,transparent 21%)}
+.hero .gear{font-size:2rem;line-height:1;margin-bottom:8px}
+.hero h1{font-size:2.6rem;line-height:1.05;letter-spacing:-.01em;margin:0 0 18px}
+.ar{background:rgba(255,255,255,.65);border:3px double var(--on-accent);border-radius:14px;padding:12px 14px;font-family:"Amiri","Noto Naskh Arabic","Traditional Arabic",serif;font-size:1.25rem;line-height:1.9;text-align:center}
+.ar b{display:block;font-size:1.15rem;margin-bottom:2px}
+.hide{display:none}
+.hint{margin:0 0 14px;border:2px dashed var(--line);border-radius:12px;padding:8px 12px;background:var(--bg)}
+.hint summary{cursor:pointer;font-weight:600}
+.hint p{margin:8px 0 0}
+.ar2{font-family:"Amiri","Noto Naskh Arabic",serif;font-size:1.15rem;line-height:1.8}
+.btn small{font-weight:400;font-size:.9rem}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+var Q=[
+{t:"m",b:"🧍‍♂️➡️ 🏦 Ein Mann läuft auf der Straße. Die Bank ist noch vor ihm.",o:["Er kommt aus der Bank.","Er geht zur Bank.","Er ist in der Bank."],c:1},
+{t:"w",b:"👩➡️ 🥖🏪 Maria läuft auf der Straße. Die Bäckerei ist noch vor ihr.",q:"Wohin geht Maria? Schreibe einen ganzen Satz.",a:["Maria geht zur Bäckerei.","Sie geht zur Bäckerei."]},
+{t:"m",b:"🏦🧍‍♂️ Ein Mann steht drinnen am Schalter und hebt Geld ab.",o:["Er ist in der Bank.","Er geht zur Bank.","Er kommt aus der Bank."],c:0},
+{t:"w",b:"🏥🪑 Herr Klein sitzt auf der Liege. Der Arzt untersucht ihn.",q:"Wo ist Herr Klein? Schreibe einen ganzen Satz.",a:["Herr Klein ist beim Arzt.","Er ist beim Arzt."]},
+{t:"m",b:"🧍‍♂️🩺 Ein Mann sitzt im Behandlungszimmer. Der Arzt hört sein Herz ab.",o:["Er kommt vom Arzt.","Er geht zum Arzt.","Er ist beim Arzt."],c:2},
+{t:"w",b:"📚🚪👧 Lena verlässt die Bibliothek. Sie trägt drei Bücher.",q:"Woher kommt Lena? Schreibe einen ganzen Satz.",a:["Lena kommt aus der Bibliothek.","Sie kommt aus der Bibliothek."]},
+{t:"m",b:"🏥🚪🧍‍♂️👋 Ein Mann verlässt die Praxis. Er ist fertig und winkt dem Arzt.",o:["Er kommt vom Arzt.","Er ist beim Arzt.","Er geht zum Arzt."],c:0},
+{t:"w",b:"🧍‍♀️➡️ 🛒🏪 Frau Braun geht auf der Straße. Der Supermarkt ist noch vor ihr.",q:"Wohin geht Frau Braun? Schreibe einen ganzen Satz.",a:["Frau Braun geht zum Supermarkt.","Sie geht zum Supermarkt."]},
+{t:"m",b:"🧍‍♀️📦➡️ 📮 Eine Frau trägt ein Paket. Die Post ist noch vor ihr.",o:["Sie kommt von der Post.","Sie ist bei der Post.","Sie geht zur Post."],c:2},
+{t:"w",b:"📮🧍‍♂️ Ein Mann steht am Schalter. Er kauft eine Briefmarke und schickt einen Brief.",q:"Wo ist der Mann? Schreibe einen ganzen Satz.",a:["Der Mann ist bei der Post.","Er ist bei der Post."]},
+{t:"m",b:"🏫🚪🧒🧒 Die Kinder laufen aus dem Schulgebäude. Die Schule ist zu Ende.",o:["Sie sind in der Schule.","Sie kommen aus der Schule.","Sie gehen zur Schule."],c:1},
+{t:"w",b:"💇‍♀️✨ Frau Weber steht vor dem Friseur. Sie hat gerade neue Haare bekommen und geht nach Hause.",q:"Woher kommt Frau Weber? Schreibe einen ganzen Satz.",a:["Frau Weber kommt vom Friseur.","Sie kommt vom Friseur."]},
+{t:"m",b:"💊🧍‍♀️ Eine Frau steht hinter der Theke. Sie kauft Medizin.",o:["Sie kommt aus der Apotheke.","Sie geht zur Apotheke.","Sie ist in der Apotheke."],c:2},
+{t:"w",b:"🏫✏️🧒🧒 Die Kinder sitzen im Klassenzimmer. Der Lehrer schreibt an die Tafel.",q:"Wo sind die Kinder? Schreibe einen ganzen Satz.",a:["Die Kinder sind in der Schule.","Sie sind in der Schule."]},
+{t:"m",b:"💇‍♂️🪑 Ein Mann sitzt auf dem Stuhl. Der Friseur schneidet seine Haare.",o:["Er kommt vom Friseur.","Er geht zum Friseur.","Er ist beim Friseur."],c:2},
+{t:"w",b:"🧍‍♂️➡️ 💊🏪 Herr Weber hat Kopfschmerzen. Er läuft auf der Straße. Die Apotheke ist noch vor ihm.",q:"Wohin geht Herr Weber? Schreibe einen ganzen Satz.",a:["Herr Weber geht zur Apotheke.","Er geht zur Apotheke."]},
+{t:"m",b:"🛒🛍️🧍‍♀️🚪 Eine Frau verlässt den Supermarkt. Sie trägt zwei volle Tüten.",o:["Sie geht zum Supermarkt.","Sie ist im Supermarkt.","Sie kommt aus dem Supermarkt."],c:2},
+{t:"w",b:"🎬🚪👨‍👩‍👧 Eine Familie verlässt das Kino. Der Film ist zu Ende.",q:"Woher kommt die Familie? Schreibe einen ganzen Satz.",a:["Die Familie kommt aus dem Kino.","Sie kommt aus dem Kino."]},
+{t:"m",b:"🧍‍♂️🧳➡️ 🚉 Ein Mann läuft mit einem Koffer. Der Bahnhof ist noch vor ihm.",o:["Er geht zum Bahnhof.","Er kommt vom Bahnhof.","Er ist beim Bahnhof."],c:0},
+{t:"w",b:"🏥🛏️👩 Frau Schmidt ist krank. Sie liegt im Bett, und Krankenschwestern kümmern sich um sie.",q:"Wo ist Frau Schmidt? Schreibe einen ganzen Satz.",a:["Frau Schmidt ist im Krankenhaus.","Sie ist im Krankenhaus."]}
+];
+var app=document.getElementById("app"),i=0,score=0,name="",done=false;
+function save(a,b){try{localStorage.setItem("dm",JSON.stringify({n:name,i:a,s:b}));}catch(e){}}
+function load(){try{var r=JSON.parse(localStorage.getItem("dm")||"null");return r&&r.i>0&&r.i<Q.length?r:null;}catch(e){return null;}}
+function clr(){try{localStorage.removeItem("dm");}catch(e){}}
+function norm(s){return s.toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/[.!?]+\s*$/,"").replace(/\s+/g," ").trim();}
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+function start(){
+ var sv=load();app.innerHTML=(sv?'<div class="card"><button class="btn" id="rs">▶ Prüfung fortsetzen · استكمال الامتحان<br><small>Aufgabe '+(sv.i+1)+' von '+Q.length+' · Punkte: '+sv.s+'</small></button></div>':'')+'<section class="hero"><div class="gear" aria-hidden="true">⚙️✨</div><h1>Wer rastet,<br>der rostet.</h1><div class="ar" lang="ar" dir="rtl"><b>❖ مَثَلٌ أَلْمَانِيٌّ ❖</b>مَنْ أَطَالَ الرَّاحَةَ وَتَرَكَ الحَرَكَةَ عَلَاهُ الصَّدَأُ كَالحَدِيدِ الرَّاكِدِ، وَمَنْ دَاوَمَ عَلَى التَّعَلُّمِ وَالعَمَلِ ظَلَّ لَامِعًا مُتَجَدِّدًا.</div></section><div class="card"><h2>Willkommen!</h2><p>Wie heißt du?</p><input type="text" id="nm" autocomplete="off" aria-label="Dein Name"><button class="btn" id="go">Los geht’s</button></div>'
+ +'<div class="card"><h2>Hallo!</h2><p>20 Aufgaben zum Dativ mit Wo? Wohin? Woher? Nach jeder Antwort kommt sofort die Korrektur.</p><ul class="rules"><li><b>der / das</b> → dem</li><li><b>die</b> → der</li><li><b>die (Plural)</b> → den + n</li><li><b>Wo?</b> → bei / im / zu Hause</li><li><b>Wohin?</b> → zu / nach</li><li><b>Woher?</b> → aus / von</li></ul></div>'
+ +'<p class="mute">Die Aufgaben wechseln: Auswahl, ganze Antwort. Bei der ganzen Antwort schreibst du den ganzen Satz, vom ersten bis zum letzten Wort. Du darfst ä, ö, ü und ß schreiben.</p>';
+ var rs=document.getElementById("rs");if(rs)rs.onclick=function(){name=sv.n||"";i=sv.i;score=sv.s;show();};
+ var nm=document.getElementById("nm");
+ function go(){name=nm.value.trim();i=0;score=0;show();}
+ document.getElementById("go").onclick=go;
+ nm.onkeydown=function(e){if(e.key==="Enter")go();};
+}
+function show(){
+ done=false;var q=Q[i];save(i,score);
+ var h='<div class="top"><span>Aufgabe '+(i+1)+' von '+Q.length+'</span><span>Punkte: '+score+'</span></div><div class="bar"><i style="width:'+(i/Q.length*100)+'%"></i></div>';
+ h+='<div class="card"><div class="scene">'+esc(q.b)+'</div>';
+ if(q.t==="m"){
+  h+='<p><b>Welcher Satz passt zum Bild?</b></p>';
+  q.o.forEach(function(o,k){h+='<button class="opt" data-k="'+k+'">'+esc(o)+'</button>';});
+ }else{
+  h+='<p><b>'+esc(q.q)+'</b></p><input type="text" id="ans" autocomplete="off" autocapitalize="sentences" spellcheck="false" aria-label="Deine Antwort"><button class="btn" id="chk">Prüfen</button>';
+ }
+ h+='<div id="fb"></div><button class="btn hide" id="nx">'+(i===Q.length-1?"Ergebnis ansehen":"Weiter")+'</button></div>';
+ app.innerHTML=h;window.scrollTo(0,0);
+ if(q.t==="m"){
+  var bs=app.querySelectorAll(".opt");
+  bs.forEach(function(b){b.onclick=function(){
+   if(done)return;done=true;var k=+b.dataset.k,ok=k===q.c;
+   bs.forEach(function(x){x.disabled=true;});
+   bs[q.c].classList.add("ok");if(!ok)b.classList.add("bad");
+   finish(ok,ok?"Richtig!":"Falsch. Richtig ist: "+q.o[q.c]);
+  };});
+ }else{
+  var inp=document.getElementById("ans"),chk=document.getElementById("chk");
+  function check(){
+   if(done||!inp.value.trim())return;done=true;
+   var ok=q.a.some(function(a){return norm(a)===norm(inp.value);});
+   inp.disabled=true;chk.classList.add("hide");
+   var fw=norm(inp.value).split(" ")[0],shown=q.a.filter(function(a){return norm(a).split(" ")[0]===fw;})[0]||q.a[0];
+   finish(ok,ok?"Richtig!":"Falsch. Richtig ist: "+shown);
+  }
+  chk.onclick=check;inp.onkeydown=function(e){if(e.key==="Enter")check();};inp.focus();
+ }
+}
+function finish(ok,msg){
+ if(ok)score++;save(i+1,score);
+ var f=document.getElementById("fb");f.className="fb "+(ok?"ok":"bad");f.textContent=msg;
+ var nx=document.getElementById("nx");nx.classList.remove("hide");
+ nx.onclick=function(){i++;if(i<Q.length)show();else result();};
+}
+function result(){
+ clr();var p=Math.round(score/Q.length*100);
+ var m=p>=90?"Du bist ein Dativ-Meister!":p>=60?"Gut gemacht! Übe die falschen Sätze noch einmal.":"Lies die Regeln noch einmal und versuche es wieder.";
+ app.innerHTML='<h1>Ergebnis</h1><div class="card"><p>'+(name?esc(name)+', du':"Du")+' hast</p><div class="score">'+score+' / '+Q.length+'</div><p>'+p+' Prozent. '+m+'</p><button class="btn" id="again">Noch einmal</button></div>';
+ document.getElementById("again").onclick=start;window.scrollTo(0,0);
+}
+start();
+</script>
+</body>
+</html>
